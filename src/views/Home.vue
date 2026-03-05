@@ -5,6 +5,13 @@
       <p>محفظتك الرقمية الآمنة</p>
     </div>
     
+    <div class="debug-box">
+      <h3>تشخيص:</h3>
+      <p>initData موجود: {{ hasInitData ? 'نعم' : 'لا' }}</p>
+      <p v-if="initDataPreview">initData: {{ initDataPreview }}</p>
+      <p v-if="error" class="error">خطأ: {{ error }}</p>
+    </div>
+    
     <div v-if="loading" class="loading">
       جاري التحميل...
     </div>
@@ -37,6 +44,14 @@
 export default {
   name: 'Home',
   
+  data() {
+    return {
+      error: null,
+      hasInitData: false,
+      initDataPreview: ''
+    }
+  },
+  
   computed: {
     wallet() {
       return this.$store.state.wallet
@@ -47,17 +62,29 @@ export default {
   },
   
   mounted() {
-    if (window.Telegram.WebApp.initData) {
-      this.login()
-    }
+    this.checkTelegram()
   },
   
   methods: {
+    checkTelegram() {
+      const tg = window.Telegram.WebApp
+      
+      if (tg.initData) {
+        this.hasInitData = true
+        this.initDataPreview = tg.initData.substring(0, 50) + '...'
+      } else {
+        this.hasInitData = false
+        this.initDataPreview = ''
+      }
+    },
+    
     async login() {
+      this.error = null
+      
       try {
         await this.$store.dispatch('login')
-      } catch (error) {
-        alert('فشل تسجيل الدخول')
+      } catch (err) {
+        this.error = err.response?.data?.error || err.message || 'فشل'
       }
     },
     
@@ -85,9 +112,23 @@ export default {
   margin-bottom: 8px;
 }
 
-.header p {
-  color: #666;
+.debug-box {
+  background: #fff3cd;
+  border: 1px solid #ffc107;
+  border-radius: 8px;
+  padding: 16px;
+  margin-bottom: 20px;
   font-size: 14px;
+}
+
+.debug-box h3 {
+  margin-bottom: 10px;
+  color: #856404;
+}
+
+.debug-box .error {
+  color: #721c24;
+  margin-top: 10px;
 }
 
 .loading {
