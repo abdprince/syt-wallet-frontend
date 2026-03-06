@@ -2,7 +2,7 @@
   <div class="home">
     <div class="header">
       <h1>SYT Wallet</h1>
-      <p>محفظتك الرقمية الآمنة</p>
+      <p>المحفظة الرقمية الآمنة</p>
     </div>
     
     <div v-if="loading" class="loading">
