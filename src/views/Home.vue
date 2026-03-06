@@ -5,13 +5,6 @@
       <p>محفظتك الرقمية الآمنة</p>
     </div>
     
-    <div class="debug-box">
-      <h3>تشخيص:</h3>
-      <p>initData موجود: {{ hasInitData ? 'نعم' : 'لا' }}</p>
-      <p v-if="initDataPreview">initData: {{ initDataPreview }}</p>
-      <p v-if="error" class="error">خطأ: {{ error }}</p>
-    </div>
-    
     <div v-if="loading" class="loading">
       جاري التحميل...
     </div>
@@ -30,6 +23,13 @@
           <button @click="copyAddress">نسخ</button>
         </div>
       </div>
+      
+      <div class="stats">
+        <div class="stat">
+          <span class="value">{{ wallet.total_earned.toFixed(2) }}</span>
+          <span class="label">إجمالي الأرباح</span>
+        </div>
+      </div>
     </div>
     
     <div v-else class="login-section">
@@ -37,20 +37,32 @@
         فتح المحفظة
       </button>
     </div>
+    
+    <!-- ✅ الأزرار الجديدة -->
+    <nav v-if="wallet" class="main-nav">
+      <router-link to="/transfer" class="nav-item">
+        <span class="icon">↗️</span>
+        <span>تحويل</span>
+      </router-link>
+      <router-link to="/rewards" class="nav-item">
+        <span class="icon">🎁</span>
+        <span>المكافآت</span>
+      </router-link>
+      <router-link to="/tasks" class="nav-item">
+        <span class="icon">✅</span>
+        <span>المهام</span>
+      </router-link>
+      <router-link to="/referrals" class="nav-item">
+        <span class="icon">👥</span>
+        <span>الإحالات</span>
+      </router-link>
+    </nav>
   </div>
 </template>
 
 <script>
 export default {
   name: 'Home',
-  
-  data() {
-    return {
-      error: null,
-      hasInitData: false,
-      initDataPreview: ''
-    }
-  },
   
   computed: {
     wallet() {
@@ -62,29 +74,17 @@ export default {
   },
   
   mounted() {
-    this.checkTelegram()
+    if (window.Telegram.WebApp.initData) {
+      this.login()
+    }
   },
   
   methods: {
-    checkTelegram() {
-      const tg = window.Telegram.WebApp
-      
-      if (tg.initData) {
-        this.hasInitData = true
-        this.initDataPreview = tg.initData.substring(0, 50) + '...'
-      } else {
-        this.hasInitData = false
-        this.initDataPreview = ''
-      }
-    },
-    
     async login() {
-      this.error = null
-      
       try {
         await this.$store.dispatch('login')
-      } catch (err) {
-        this.error = err.response?.data?.error || err.message || 'فشل'
+      } catch (error) {
+        alert('فشل تسجيل الدخول')
       }
     },
     
@@ -112,23 +112,9 @@ export default {
   margin-bottom: 8px;
 }
 
-.debug-box {
-  background: #fff3cd;
-  border: 1px solid #ffc107;
-  border-radius: 8px;
-  padding: 16px;
-  margin-bottom: 20px;
+.header p {
+  color: #666;
   font-size: 14px;
-}
-
-.debug-box h3 {
-  margin-bottom: 10px;
-  color: #856404;
-}
-
-.debug-box .error {
-  color: #721c24;
-  margin-top: 10px;
 }
 
 .loading {
@@ -142,6 +128,7 @@ export default {
   border-radius: 16px;
   padding: 24px;
   color: white;
+  margin-bottom: 20px;
 }
 
 .balance-section {
@@ -171,6 +158,7 @@ export default {
   background: rgba(255,255,255,0.15);
   border-radius: 8px;
   padding: 12px;
+  margin-bottom: 16px;
 }
 
 .address-section .label {
@@ -202,6 +190,26 @@ export default {
   color: #667eea;
 }
 
+.stats {
+  display: flex;
+  justify-content: center;
+}
+
+.stat {
+  text-align: center;
+}
+
+.stat .value {
+  display: block;
+  font-size: 20px;
+  font-weight: bold;
+}
+
+.stat .label {
+  font-size: 12px;
+  opacity: 0.9;
+}
+
 .login-section {
   text-align: center;
   padding: 40px;
@@ -216,5 +224,39 @@ export default {
   font-size: 16px;
   cursor: pointer;
   width: 100%;
+}
+
+/* ✅ الأزرار الجديدة */
+.main-nav {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 12px;
+  margin-top: 20px;
+}
+
+.nav-item {
+  background: white;
+  border: 1px solid #e0e0e0;
+  border-radius: 12px;
+  padding: 20px;
+  text-align: center;
+  text-decoration: none;
+  color: #333;
+  transition: transform 0.2s;
+}
+
+.nav-item:active {
+  transform: scale(0.98);
+}
+
+.nav-item .icon {
+  display: block;
+  font-size: 28px;
+  margin-bottom: 8px;
+}
+
+.nav-item span:last-child {
+  font-size: 14px;
+  font-weight: 500;
 }
 </style>
