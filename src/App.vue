@@ -73,7 +73,7 @@
 <script>
 import axios from 'axios'
 
-const API_URL = 'https://syt-wallet-v2.onrender.com/api'
+const API_URL = 'https://syt-wallet-api.onrender.com/api'
 
 export default {
   name: 'Home',
