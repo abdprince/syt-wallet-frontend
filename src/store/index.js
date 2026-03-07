@@ -1,7 +1,7 @@
 import { createStore } from 'vuex'
 import axios from 'axios'
 
-const API_URL = 'https://syt-wallet-api.onrender.com'
+const API_URL = 'https://syt-wallet-api.onrender.com/api'
 
 export default createStore({
   state: {
