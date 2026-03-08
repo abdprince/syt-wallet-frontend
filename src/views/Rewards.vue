@@ -2,7 +2,7 @@
   <div class="rewards">
     <div class="header">
       <router-link to="/" class="back">←</router-link>
-      <h2>المكافآت اليومية</h2>
+      <h2>مكافأة تسجيل الدخول</h2>
     </div>
     
     <div v-if="loading" class="loading">جاري التحميل...</div>
@@ -10,8 +10,6 @@
     <div v-else class="content">
       <div class="reward-card" :class="{ 'can-claim': rewardData?.can_claim }">
         <div class="streak">
-          <span class="fire">🔥</span>
-          <span class="days">{{ rewardData?.streak_days || 0 }} يوم متتالي</span>
         </div>
         
         <div class="reward-amount">
@@ -100,8 +98,6 @@ export default {
 .reward-card { background: white; border-radius: 16px; padding: 24px; text-align: center; border: 2px solid #e0e0e0; }
 .reward-card.can-claim { border-color: #28a745; }
 .streak { margin-bottom: 16px; }
-.fire { font-size: 32px; }
-.days { display: block; font-size: 14px; color: #666; margin-top: 4px; }
 .reward-amount { margin-bottom: 16px; }
 .reward-amount .amount { font-size: 48px; font-weight: bold; color: #667eea; display: block; }
 .reward-amount .unit { font-size: 18px; color: #666; }
